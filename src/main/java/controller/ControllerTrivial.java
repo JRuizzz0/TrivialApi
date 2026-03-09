@@ -42,14 +42,7 @@ public class ControllerTrivial {
                 service.sendResponse(exchange, 404, "Endpoint trivial no válido");
                 return;
             }
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(apiUrl))
-                    .GET()
-                    .build();
-            HttpResponse<String> response =
-                    client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
-            sendResponse(exchange, 200, response.body());
+
 
             /**
              * request para recorger la url y manejarla con el router y el control
