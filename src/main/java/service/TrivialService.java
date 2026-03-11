@@ -2,6 +2,8 @@ package service;
 
 import com.google.gson.*;
 import com.sun.net.httpserver.HttpExchange;
+
+import javax.swing.text.html.parser.Parser;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
@@ -9,8 +11,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 
 public class TrivialService {
+    Random random = new Random();
     private final Gson gson = new Gson();
     private final HttpClient client = HttpClient.newHttpClient();
     private final String easy = "https://opentdb.com/api.php?amount=10&difficulty=easy";
@@ -30,57 +36,139 @@ public class TrivialService {
     }
 
     public void JsonPrinteasy(HttpExchange exchange) throws IOException, InterruptedException {
+
         JsonObject raiz = fetchApiData(easy);
         JsonArray results = raiz.getAsJsonArray("results");
 
 
         JsonArray data = new JsonArray();
+
         for (JsonElement element : results) {
+
             JsonObject obj = element.getAsJsonObject();
             JsonObject dataObj = new JsonObject();
-            dataObj.addProperty("question", obj.get("question").getAsString());
-            dataObj.addProperty("correct_answer", obj.get("correct_answer").getAsString());
+
+            String respuesta_correcta = obj.get("correct_answer").getAsString();
+            String question = obj.get("question").getAsString();
+            JsonArray incorrect_answers = obj.get("incorrect_answers").getAsJsonArray();
+
+
+            dataObj.addProperty("question", question);
+            dataObj.addProperty("correct_answer", respuesta_correcta);
+            dataObj.add("incorrect_answers", incorrect_answers);
+
+            List<String> listAns = new ArrayList<>();
+
+            for (JsonElement incorrect_answer : incorrect_answers) {
+                listAns.add(incorrect_answer.getAsString());
+            }
+            int numberRandom = random.nextInt(listAns.size());
+            listAns.add(numberRandom, respuesta_correcta);
+
             JsonArray answers = new JsonArray();
+            for (String answerJson : listAns) {
+                answers.add(answerJson);
+            }
+
             dataObj.add("answers", answers);
+
             data.add(dataObj);
 
 
         }
         sendResponse(exchange, 200, gson.toJson(data));
+
     }
 
     public void JsonPrintmedium(HttpExchange exchange) throws IOException, InterruptedException {
+
         JsonObject raiz = fetchApiData(medium);
         JsonArray results = raiz.getAsJsonArray("results");
 
 
         JsonArray data = new JsonArray();
+
         for (JsonElement element : results) {
+
             JsonObject obj = element.getAsJsonObject();
             JsonObject dataObj = new JsonObject();
-            dataObj.addProperty("question", obj.get("question").getAsString());
-            dataObj.addProperty("correct_answer", obj.get("correct_answer").getAsString());
-            dataObj.addProperty("incorrect_answers", String.valueOf(obj.get("incorrect_answers").getAsJsonArray()));
+
+            String respuesta_correcta = obj.get("correct_answer").getAsString();
+            String question = obj.get("question").getAsString();
+            JsonArray incorrect_answers = obj.get("incorrect_answers").getAsJsonArray();
+
+
+            dataObj.addProperty("question", question);
+            dataObj.addProperty("correct_answer", respuesta_correcta);
+            dataObj.add("incorrect_answers", incorrect_answers);
+
+            List<String> listAns = new ArrayList<>();
+
+            for (JsonElement incorrect_answer : incorrect_answers) {
+                listAns.add(incorrect_answer.getAsString());
+            }
+            int numberRandom = random.nextInt(listAns.size());
+            listAns.add(numberRandom, respuesta_correcta);
+
+            JsonArray answers = new JsonArray();
+            for (String answerJson : listAns) {
+                answers.add(answerJson);
+            }
+
+            dataObj.add("answers", answers);
+
             data.add(dataObj);
+
+
         }
         sendResponse(exchange, 200, gson.toJson(data));
+
     }
 
+
     public void JsonPrinthard(HttpExchange exchange) throws IOException, InterruptedException {
+
         JsonObject raiz = fetchApiData(hard);
         JsonArray results = raiz.getAsJsonArray("results");
 
 
         JsonArray data = new JsonArray();
+
         for (JsonElement element : results) {
+
             JsonObject obj = element.getAsJsonObject();
             JsonObject dataObj = new JsonObject();
-            dataObj.addProperty("question", obj.get("question").getAsString());
-            dataObj.addProperty("correct_answer", obj.get("correct_answer").getAsString());
-            dataObj.addProperty("incorrect_answers", String.valueOf(obj.get("incorrect_answers").getAsJsonArray()));
+
+            String respuesta_correcta = obj.get("correct_answer").getAsString();
+            String question = obj.get("question").getAsString();
+            JsonArray incorrect_answers = obj.get("incorrect_answers").getAsJsonArray();
+
+
+            dataObj.addProperty("question", question);
+            dataObj.addProperty("correct_answer", respuesta_correcta);
+            dataObj.add("incorrect_answers", incorrect_answers);
+
+            List<String> listAns = new ArrayList<>();
+
+            for (JsonElement incorrect_answer : incorrect_answers) {
+                listAns.add(incorrect_answer.getAsString());
+            }
+            int numberRandom = random.nextInt(listAns.size());
+            listAns.add(numberRandom, respuesta_correcta);
+
+            JsonArray answers = new JsonArray();
+            for (String answerJson : listAns) {
+                answers.add(answerJson);
+            }
+
+            dataObj.add("answers", answers);
+
             data.add(dataObj);
+
+
         }
         sendResponse(exchange, 200, gson.toJson(data));
+
     }
 
     public void sendResponse(HttpExchange exchange, int status, String body) throws IOException {

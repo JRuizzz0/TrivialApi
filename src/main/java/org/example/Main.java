@@ -16,7 +16,7 @@ public class Main {
             server.setExecutor(null);
             server.start();
 
-            System.out.println("Servidor iniciado en http://localhost:8080");
+            System.out.println("Servidor iniciado en http://localhost:8080/trivial/easy");
         }catch (Exception e){
             System.out.println("Error 503: Servidor no iniciado.");
 
